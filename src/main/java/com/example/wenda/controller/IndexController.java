@@ -11,7 +11,7 @@ import javax.servlet.http.HttpSession;
 /**
  * Created by chen on 2018/11/26.
  */
-@Controller
+//@Controller
 public class IndexController {
 
     @RequestMapping(path = {"/","/index"})
