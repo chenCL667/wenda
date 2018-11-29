@@ -1,6 +1,7 @@
 package com.example.wenda.aspect;
 
 
+import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.After;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
@@ -18,8 +19,14 @@ public class LogAspect {
     private static final Logger logger = LoggerFactory.getLogger(LogAspect.class);
 
     @Before("execution (* com.example.wenda.controller.*.*(..))")
-    public void before(){
-        logger.info("before method");
+    public void before(JoinPoint joinPoint){
+        StringBuilder sb = new StringBuilder();
+        for (Object arg : joinPoint.getArgs()) {
+            if (arg != null) {
+                sb.append("arg:" + arg.toString() + "|");
+            }
+        }
+        logger.info("before method:" + sb.toString());
     }
 
     @After("execution (* com.example.wenda.controller.*.*(..))")

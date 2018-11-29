@@ -25,4 +25,6 @@ public interface UserDAO {
     void updatePassowrd(User user);
 
 
+    @Select({"select ", SELECT_FIELDS , " from ", TABLE_NAME, " where name=#{name}"})
+    User selectByName(String name);
 }
