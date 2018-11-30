@@ -1,7 +1,6 @@
 package com.example.wenda.dao;
 
 import com.example.wenda.model.Question;
-import com.example.wenda.model.User;
 import org.apache.ibatis.annotations.*;
 
 import java.util.List;
@@ -23,5 +22,7 @@ public interface QuestionDAO {
                                         @Param("offset") int offset,
                                         @Param("limit") int limit);
 
+    @Select({"select ", SELECT_FIELDS , " from ", TABLE_NAME, " where id=#{qid}"})
+    Question selectById(int qid);
 
 }
