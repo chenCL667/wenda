@@ -1,7 +1,7 @@
 package com.example.wenda.controller;
 
-import com.example.wenda.model.HostHolder;
-import com.example.wenda.model.Question;
+import com.example.wenda.model.*;
+import com.example.wenda.service.CommentService;
 import com.example.wenda.service.QuestionService;
 import com.example.wenda.service.UserService;
 import com.example.wenda.util.WendaUtil;
@@ -12,7 +12,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by chen on 2018/11/29.
@@ -28,8 +30,11 @@ public class QuestionController {
     @Autowired
     UserService userService;
 
+    @Autowired
+    CommentService commentService;
 
-    private static final Logger logger = LoggerFactory.getLogger(HomeController.class);
+
+    private static final Logger logger = LoggerFactory.getLogger(QuestionController.class);
 
     @RequestMapping(value = "/question/add", method = {RequestMethod.POST})
     @ResponseBody
@@ -66,7 +71,15 @@ public class QuestionController {
     public String questionDetail(@PathVariable("qid") int qid, Model model){
         Question question = questionService.selectById(qid);
         model.addAttribute("question", question);
-        model.addAttribute("user", userService.getUser(question.getUserId()));
+        List<Comment> commentList = commentService.getCommentsByEntity(qid, EntityType.ENTITY_QUESTION);
+        List<ViewObject> vos = new ArrayList<>();
+        for (Comment comment : commentList) {
+            ViewObject vo = new ViewObject();
+            vo.set("comment", comment);
+            vo.set("user", userService.getUser(comment.getUserId()));
+            vos.add(vo);
+        }
+        model.addAttribute("comments", vos);
         return "detail";
     }
 }

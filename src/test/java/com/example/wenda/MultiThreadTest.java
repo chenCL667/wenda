@@ -14,7 +14,7 @@ class MyThread extends Thread{
     public void run() {
         for (int i = 0; i < 10; i++) {
             try {
-//                Thread.sleep(1000);
+                Thread.sleep(1000);
                 System.out.printf("%d: %d ", id, i);
                 System.out.println();
             } catch (Exception e) {

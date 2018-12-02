@@ -4,7 +4,6 @@ import com.example.wenda.dao.QuestionDAO;
 import com.example.wenda.model.Question;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.ui.Model;
 import org.springframework.web.util.HtmlUtils;
 
 import java.util.List;
@@ -43,5 +42,9 @@ public class QuestionService {
     public List<Question> getLatestQuestions(int userId, int offset, int limit){
         return questionDAO.selectLatestQuestions(userId, offset, limit);
 
+    }
+
+    public void updateCommentCount(int entityId, int count) {
+        questionDAO.updateCommentCount(entityId, count);
     }
 }
