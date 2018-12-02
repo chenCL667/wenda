@@ -1,5 +1,6 @@
 package com.example.wenda;
 
+import com.example.wenda.dao.MessageDAO;
 import com.example.wenda.dao.QuestionDAO;
 import com.example.wenda.dao.UserDAO;
 import com.example.wenda.model.Question;
@@ -25,10 +26,13 @@ public class InitDatabaseTests {
 	@Autowired
 	QuestionDAO questionDAO;
 
+	@Autowired
+	MessageDAO messageDAO;
+
 
 	@Test
 	public void initDatabase() {
-		Random random = new Random();
+//		Random random = new Random();
 
 //		for (int i = 0; i < 10; i++) {
 //			User user = new User();
@@ -58,9 +62,11 @@ public class InitDatabaseTests {
 ////		User user = new User();
 ////		user = userDAO.selectById(26);
 ////		System.out.print(user.toString());
+//
+//		questionDAO.selectLatestQuestions(1, 0, 5);
+//		System.out.print(questionDAO.selectLatestQuestions(1, 0, 5));
+		messageDAO.updateHasRead(1, 1);
 
-		questionDAO.selectLatestQuestions(1, 0, 5);
-		System.out.print(questionDAO.selectLatestQuestions(1, 0, 5));
 	}
 
 }

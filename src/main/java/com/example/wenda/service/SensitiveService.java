@@ -21,7 +21,7 @@ import java.util.Map;
 @Service
 public class SensitiveService implements InitializingBean{
 
-    private static final Logger logger = LoggerFactory.getLogger(LoginController.class);
+    private static final Logger logger = LoggerFactory.getLogger(SensitiveService.class);
 
     /**
      * 默认敏感词替换符
