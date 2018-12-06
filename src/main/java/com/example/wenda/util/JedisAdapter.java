@@ -8,6 +8,8 @@ import org.springframework.stereotype.Service;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 
+import java.util.List;
+
 /**
  * Created by chen on 2018/12/3.
  */
@@ -86,6 +88,39 @@ public class JedisAdapter implements InitializingBean{
         }
 
         return false;
+    }
+
+    public long lpush(String key, String value){
+        Jedis jedis = null;
+        try{
+            jedis = pool.getResource();
+            return jedis.lpush(key, value);
+        }catch(Exception e){
+            logger.error("jedis异常" + e.getMessage());
+        }finally {
+            if(jedis != null){
+                jedis.close();
+            }
+        }
+
+        return 0;
+    }
+
+    public List<String> brpop(int timeout, String key) {
+        Jedis jedis = null;
+        try{
+            jedis = pool.getResource();
+            return jedis.brpop(timeout, key);
+        }catch(Exception e){
+            logger.error("jedis异常" + e.getMessage());
+        }finally {
+            if(jedis != null){
+                jedis.close();
+            }
+        }
+
+        return null;
+
     }
 //    public void print(int index, Object object){
 //        System.out.println(String.format("%d, %s", index, object.toString()));

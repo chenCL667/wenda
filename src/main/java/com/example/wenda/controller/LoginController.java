@@ -1,5 +1,8 @@
 package com.example.wenda.controller;
 
+import com.example.wenda.async.EventModel;
+import com.example.wenda.async.EventProducer;
+import com.example.wenda.async.EventType;
 import com.example.wenda.service.UserService;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -26,6 +29,10 @@ public class LoginController {
 
     @Autowired
     UserService userService;
+
+    //用来发送事件，用于异常处理和异步处理
+    @Autowired
+    EventProducer eventProducer;
 
     @RequestMapping(path = {"/reg/"}, method = {RequestMethod.POST})
     public String reg(Model model,
@@ -78,11 +85,20 @@ public class LoginController {
                         @RequestParam(value = "rememberme", defaultValue = "false") boolean rememberme,
                         HttpServletResponse response)  {
         try {
-            Map<String,String> map = userService.login(username,password);
+            Map<String, Object> map = userService.login(username,password);
             if(map.containsKey("ticket")){
-                Cookie cookie = new Cookie("ticket", map.get("ticket"));
+                Cookie cookie = new Cookie("ticket", map.get("ticket").toString());
                 cookie.setPath("/");
+                if(rememberme){
+                    cookie.setMaxAge(3600*24*5);//有效期5天
+                }
                 response.addCookie(cookie);
+
+                eventProducer.fireEvent(new EventModel(EventType.LOGIN)
+                        .setExt("userName", username)
+                        .setExt("email", "15810726658@163.com")
+                        .setActorId((int)map.get("userId")));
+
                 if(StringUtils.isNotBlank(next)){
                     return "redirect:" + next;
                 }
@@ -94,7 +110,7 @@ public class LoginController {
             }
 
         }catch (Exception e){
-            logger.error("注册异常");
+            logger.error("登陆异常");
             return "login";
         }
     }

@@ -44,4 +44,8 @@ public class CommentService {
     public void deleteComment(int commentId){
         commentDAO.updateStatus(commentId, 1) ;
     }
+
+    public Comment getCommentById(int id){
+        return commentDAO.getCommentById(id);
+    }
 }
