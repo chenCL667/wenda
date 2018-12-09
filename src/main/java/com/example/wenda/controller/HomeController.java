@@ -1,7 +1,8 @@
 package com.example.wenda.controller;
 
-import com.example.wenda.model.Question;
-import com.example.wenda.model.ViewObject;
+import com.example.wenda.model.*;
+import com.example.wenda.service.CommentService;
+import com.example.wenda.service.FollowService;
 import com.example.wenda.service.QuestionService;
 import com.example.wenda.service.UserService;
 import org.slf4j.Logger;
@@ -11,6 +12,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,18 +32,43 @@ public class HomeController {
     @Autowired
     QuestionService questionService;
 
+    @Autowired
+    HostHolder hostHolder;
 
-    @RequestMapping(path = {"/user/{userId}"})
-    public String userIndex(Model model, @PathVariable("userId") int userId){
-        model.addAttribute("vos", getQuestions(userId,0,10));
+    @Autowired
+    CommentService commentService;
+
+    @Autowired
+    FollowService followService;
+
+
+    @RequestMapping(path = {"/user/{userId}"}, method = {RequestMethod.GET, RequestMethod.POST})
+    public String userIndex(Model model, @PathVariable("userId") int userId) {
+        model.addAttribute("vos", getQuestions(userId, 0, 10));
+
+        User user = userService.getUser(userId);
+        ViewObject vo = new ViewObject();
+        vo.set("user", user);
+        vo.set("commentCount", commentService.getUserCommentCount(userId));
+        vo.set("followerCount", followService.getFollowerCount(EntityType.ENTITY_USER, userId));
+        vo.set("followeeCount", followService.getFolloweeCount(userId, EntityType.ENTITY_USER));
+        if (hostHolder.getUser() != null) {
+            vo.set("followed", followService.isFollower(hostHolder.getUser().getId(), EntityType.ENTITY_USER, userId));
+        } else {
+            vo.set("followed", false);
+        }
+        model.addAttribute("profileUser", vo);
+        return "profile";
+    }
+
+
+    @RequestMapping(path = {"/", "/index"}, method = {RequestMethod.GET, RequestMethod.POST})
+    public String index(Model model,
+                        @RequestParam(value = "pop", defaultValue = "0") int pop) {
+        model.addAttribute("vos", getQuestions(0, 0, 10));
         return "index";
     }
 
-    @RequestMapping(path = {"/","/index"})
-    public String index(Model model){
-        model.addAttribute("vos", getQuestions(0,0,10));
-        return "index";
-    }
 
     private List<ViewObject> getQuestions(int userId, int offset, int limit){
         List<Question> questionList = questionService.getLatestQuestions(userId,offset,limit);
@@ -49,6 +77,7 @@ public class HomeController {
         for (Question question: questionList){
             ViewObject vo = new ViewObject();
             vo.set("question", question);
+            vo.set("followCount", followService.getFollowerCount(EntityType.ENTITY_QUESTION, question.getId()));
             vo.set("user", userService.getUser(question.getUserId()));
             vos.add(vo);
         }

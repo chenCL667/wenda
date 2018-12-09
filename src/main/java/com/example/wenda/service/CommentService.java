@@ -36,6 +36,10 @@ public class CommentService {
         return commentDAO.getCommentCount(entity_id, entity_type);
     }
 
+    public int getUserCommentCount(int userId) {
+        return commentDAO.getUserCommentCount(userId);
+    }
+
 
     /**
      * 删除一条评论，实际是将status状态置为1，无效
