@@ -1,5 +1,7 @@
 package com.example.wenda.model;
 
+import com.alibaba.fastjson.JSONObject;
+
 import java.util.Date;
 
 /**
@@ -12,6 +14,7 @@ public class Feed {
     private Date createdDate;
     //json格式
     private String data;
+    private JSONObject dataJSON = null;
 
     public int getId() {
         return id;
@@ -51,5 +54,10 @@ public class Feed {
 
     public void setData(String data) {
         this.data = data;
+        dataJSON = JSONObject.parseObject(data);
+    }
+
+    public String get(String key) {
+        return dataJSON == null ? null : dataJSON.getString(key);
     }
 }

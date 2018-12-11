@@ -41,7 +41,6 @@
     }
 
     function fFollowQuestion(oConf) {
-        alert('onclick-question-before');
         var that = this;
         var oCountEl = $(oConf.countEl);
         var oListEl = $(oConf.listEl);
@@ -60,7 +59,6 @@
             Action[bFollow ? 'unFollowQuestion' : 'followQuestion']({
                 questionId: sId,
                 call: function (oResult) {
-                alert('onclick');
                     // 修改标记位
                     oEl.attr('data-status', bFollow ? '0' : '1');
                     // 按钮颜色

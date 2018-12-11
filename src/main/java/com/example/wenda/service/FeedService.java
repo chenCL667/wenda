@@ -26,6 +26,7 @@ public class FeedService {
         return feedDAO.getFeedById(id);
     }
 
+
     public boolean addFeed(Feed feed){
         feedDAO.addFeed(feed);
         return feed.getId() > 0;
